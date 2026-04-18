@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Java Methods & Functions — Class 10 ICSE</title>
+<style>
+  :root {
+    --green: #1D9E75; --green-light: #E1F5EE; --green-dark: #085041;
+    --blue: #185FA5; --blue-light: #E6F1FB; --blue-dark: #0C447C;
+    --amber: #BA7517; --amber-light: #FAEEDA; --amber-dark: #633806;
+    --coral: #993C1D; --coral-light: #FAECE7;
+    --purple: #534AB7; --purple-light: #EEEDFE;
+    --gray: #5F5E5A; --gray-light: #F1EFE8;
+    --text: #1a1a1a; --muted: #555; --border: #ddd;
+    --bg: #fff; --surface: #f8f7f4;
+    --radius: 8px; --font: 'Segoe UI', system-ui, sans-serif;
+    --mono: 'Consolas', 'Courier New', monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font); color: var(--text); background: var(--surface); font-size: 15px; line-height: 1.7; }
+
+  /* HEADER */
+  .header { background: linear-gradient(135deg, #0F6E56 0%, #1D9E75 60%, #3B8C6E 100%); color: white; padding: 40px 32px 32px; }
+  .header h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; }
+  .header p { opacity: 0.85; margin-top: 6px; font-size: 14px; }
+  .header-badges { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+  .hbadge { background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.3); border-radius: 20px; padding: 4px 12px; font-size: 12px; cursor: pointer; transition: background 0.2s; }
+  .hbadge:hover { background: rgba(255,255,255,0.3); }
+
+  /* PROGRESS BAR */
+  .progress-bar { background: #e0e0e0; height: 6px; border-radius: 3px; margin: 24px 32px 0; overflow: hidden; }
+  .progress-fill { background: white; height: 100%; border-radius: 3px; width: 0%; transition: width 0.5s ease; }
+  .progress-label { color: rgba(255,255,255,0.8); font-size: 12px; margin: 6px 32px 0; padding-bottom: 20px; }
+
+  /* LAYOUT */
+  .container { max-width: 860px; margin: 0 auto; padding: 24px 20px 60px; }
+
+  /* TOC */
+  .toc { background: white; border: 1px solid var(--border); border-radius: var(--radius); padding: 20px 24px; margin-bottom: 28px; }
+  .toc h2 { font-size: 14px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 14px; }
+  .toc-list { list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .toc-list li a { text-decoration: none; color: var(--blue); font-size: 14px; display: flex; align-items: center; gap: 8px; padding: 4px 0; }
+  .toc-list li a:hover { color: var(--green); }
+  .toc-num { background: var(--green-light); color: var(--green-dark); border-radius: 50%; width: 22px; height: 22px; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; flex-shrink: 0; }
+
+  /* SECTIONS */
+  .section { background: white; border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 16px; overflow: hidden; }
+  .section-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; cursor: pointer; user-select: none; transition: background 0.15s; }
+  .section-header:hover { background: var(--surface); }
+  .section-title { display: flex; align-items: center; gap: 12px; font-size: 17px; font-weight: 600; color: var(--text); }
+  .section-icon { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+  .chevron { color: var(--muted); font-size: 18px; transition: transform 0.25s; }
+  .section.open .chevron { transform: rotate(180deg); }
+  .section-body { display: none; padding: 0 20px 20px; border-top: 1px solid var(--border); }
+  .section.open .section-body { display: block; }
+
+  /* CARDS */
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; margin: 14px 0; }
+  .card-title { font-weight: 600; font-size: 14px; margin-bottom: 8px; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0; }
+
+  /* CODE */
+  .code-block { background: #1e1e2e; border-radius: var(--radius); padding: 14px 16px; font-family: var(--mono); font-size: 13px; line-height: 1.65; color: #cdd6f4; margin: 12px 0; overflow-x: auto; white-space: pre; }
+  .kw { color: #89b4fa; font-weight: 600; }
+  .cm { color: #6c7086; font-style: italic; }
+  .str { color: #a6e3a1; }
+  .num { color: #fab387; }
+  .fn { color: #89dceb; }
+  .cls { color: #f9e2af; }
+
+  /* BADGES */
+  .badge { display: inline-block; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 20px; margin: 2px; }
+  .badge-green { background: var(--green-light); color: var(--green-dark); }
+  .badge-blue { background: var(--blue-light); color: var(--blue-dark); }
+  .badge-amber { background: var(--amber-light); color: var(--amber-dark); }
+  .badge-coral { background: var(--coral-light); color: var(--coral); }
+  .badge-purple { background: var(--purple-light); color: var(--purple); }
+  .badge-gray { background: var(--gray-light); color: var(--gray); }
+
+  /* TIPS */
+  .tip { background: var(--green-light); border-left: 4px solid var(--green); border-radius: 0 var(--radius) var(--radius) 0; padding: 10px 14px; margin: 12px 0; font-size: 13px; color: var(--green-dark); }
+  .warn { background: var(--amber-light); border-left: 4px solid var(--amber); border-radius: 0 var(--radius) var(--radius) 0; padding: 10px 14px; margin: 12px 0; font-size: 13px; color: var(--amber-dark); }
+  .tip::before { content: "💡 "; }
+  .warn::before { content: "⚠️ "; }
+
+  /* TABLE */
+  .table-wrap { overflow-x: auto; margin: 12px 0; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { background: var(--surface); color: var(--muted); font-weight: 600; padding: 9px 12px; text-align: left; border-bottom: 2px solid var(--border); }
+  td { padding: 8px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  code { font-family: var(--mono); font-size: 12px; background: var(--surface); padding: 1px 5px; border-radius: 4px; border: 1px solid var(--border); }
+
+  /* QUIZ */
+  .quiz-section { background: white; border: 2px solid var(--purple); border-radius: var(--radius); margin-top: 32px; overflow: hidden; }
+  .quiz-header { background: var(--purple-light); padding: 16px 20px; border-bottom: 1px solid var(--border); }
+  .quiz-header h2 { color: var(--purple); font-size: 18px; }
+  .quiz-header p { color: var(--muted); font-size: 13px; margin-top: 4px; }
+  .quiz-body { padding: 20px; }
+  .q-block { margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
+  .q-block:last-of-type { border-bottom: none; }
+  .q-text { font-weight: 600; font-size: 15px; margin-bottom: 12px; }
+  .q-num { display: inline-block; background: var(--purple-light); color: var(--purple); border-radius: 50%; width: 24px; height: 24px; text-align: center; line-height: 24px; font-size: 12px; font-weight: 700; margin-right: 8px; }
+  .options { display: flex; flex-direction: column; gap: 8px; }
+  .option { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border: 1.5px solid var(--border); border-radius: var(--radius); cursor: pointer; transition: all 0.15s; font-size: 14px; }
+  .option:hover { border-color: var(--purple); background: var(--purple-light); }
+  .option.correct { border-color: var(--green); background: var(--green-light); color: var(--green-dark); font-weight: 600; }
+  .option.wrong { border-color: #E24B4A; background: #FCEBEB; color: #A32D2D; }
+  .option-label { width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; color: var(--muted); }
+  .feedback { font-size: 13px; margin-top: 8px; padding: 8px 12px; border-radius: var(--radius); display: none; }
+  .feedback.show { display: block; }
+  .feedback.ok { background: var(--green-light); color: var(--green-dark); }
+  .feedback.bad { background: #FCEBEB; color: #A32D2D; }
+  .quiz-score { display: none; background: var(--purple-light); border-radius: var(--radius); padding: 20px; text-align: center; margin-top: 16px; }
+  .quiz-score h3 { color: var(--purple); font-size: 22px; }
+  .quiz-score p { color: var(--muted); margin-top: 6px; }
+  .btn { display: inline-block; padding: 10px 24px; border: none; border-radius: var(--radius); font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.15s; }
+  .btn-primary { background: var(--green); color: white; }
+  .btn-primary:hover { background: var(--green-dark); }
+  .btn-secondary { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
+  .btn-secondary:hover { background: var(--gray-light); }
+  .btn-purple { background: var(--purple); color: white; }
+  .btn-purple:hover { background: #3C3489; }
+  .quiz-actions { display: flex; gap: 10px; margin-top: 16px; justify-content: center; }
+
+  /* SYNTAX HIGHLIGHTER DEMO */
+  .try-it { background: #1e1e2e; border-radius: var(--radius); padding: 14px 16px; margin: 12px 0; }
+  .try-it-label { color: #6c7086; font-size: 11px; font-family: var(--mono); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+
+  /* FOOTER */
+  .footer { text-align: center; padding: 24px; font-size: 12px; color: var(--muted); border-top: 1px solid var(--border); margin-top: 32px; background: white; }
+
+  @media (max-width: 560px) {
+    .grid2 { grid-template-columns: 1fr; }
+    .toc-list { grid-template-columns: 1fr; }
+    .header { padding: 28px 16px 24px; }
+    .container { padding: 16px 12px 48px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Methods &amp; Functions in Java</h1>
+  <p>Class 10 ICSE &nbsp;·&nbsp; BlueJ Environment &nbsp;·&nbsp; Complete Study Notes</p>
+  <div class="header-badges">
+    <span class="hbadge" onclick="expandAll()">▼ Expand All</span>
+    <span class="hbadge" onclick="collapseAll()">▲ Collapse All</span>
+    <span class="hbadge" onclick="document.getElementById('quiz').scrollIntoView({behavior:'smooth'})">🧠 Take Quiz</span>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+  <div class="progress-label" id="progressLabel">0 of 8 sections read</div>
+</div>
+
+<div class="container">
+
+  <!-- TOC -->
+  <div class="toc">
+    <h2>Contents</h2>
+    <ul class="toc-list">
+      <li><a href="#s1"><span class="toc-num">1</span>Introduction to Methods</a></li>
+      <li><a href="#s2"><span class="toc-num">2</span>Structure of a Method</a></li>
+      <li><a href="#s3"><span class="toc-num">3</span>Types of Methods</a></li>
+      <li><a href="#s4"><span class="toc-num">4</span>Parameters &amp; Arguments</a></li>
+      <li><a href="#s5"><span class="toc-num">5</span>Return Types</a></li>
+      <li><a href="#s6"><span class="toc-num">6</span>Method Overloading</a></li>
+      <li><a href="#s7"><span class="toc-num">7</span>Scope of Variables</a></li>
+      <li><a href="#s8"><span class="toc-num">8</span>Recursion</a></li>
+    </ul>
+  </div>
+
+  <!-- S1 -->
+  <div class="section" id="s1" data-idx="0">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-title">
+        <div class="section-icon" style="background:#E1F5EE;color:#0F6E56;">①</div>
+        Introduction to Methods
+      </div>
+      <span class="chevron">⌄</span>
+    </div>
+    <div class="section-body">
+      <div class="card">
+        <div class="card-title">What is a Method?</div>
+        A <strong>method</strong> is a named block of code that performs a specific task. It is defined once and can be called (invoked) multiple times. In Java, all functions must be inside a class — so they are called <em>methods</em>.
+        <div class="tip">Think of a method like a recipe — written once, cooked (called) many times.</div>
+      </div>
+      <div class="grid2">
+        <div class="card">
+          <div class="card-title">Why use Methods?</div>
+          <span class="badge badge-green">Reusability</span> Write once, use many times<br><br>
+          <span class="badge badge-blue">Modularity</span> Break big problems into parts<br><br>
+          <span class="badge badge-purple">Readability</span> Easier to understand<br><br>
+          <span class="badge badge-amber">Debugging</span> Test individual pieces
+        </div>
+        <div class="card">
+          <div class="card-title">Method vs Function</div>
+          In Java, <strong>there are no standalone functions</strong>. Every function must be inside a class, so we call them <em>methods</em>.<br><br>
+          In BlueJ, you can see and call all public methods of an object by right-clicking it on the workbench.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S2 -->
+  <div class="section" id="s2" data-idx="1">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-title">
+        <div class="section-icon" style="background:#E6F1FB;color:#185FA5;">②</div>
+        Structure of a Method
+      </div>
+      <span class="chevron">⌄</span>
+    </div>
+    <div class="section-body">
+      <div class="card">
+        <div class="card-title">General Syntax</div>
+        <div class="code-block"><span class="cm">// Method syntax</span>
+<span class="kw">accessModifier</span>  <span class="kw">returnType</span>  <span class="fn">methodName</span>(<span class="kw">parameterList</span>) {
+    <span class="cm">// body of the method</span>
+    <span class="kw">return</span> value;  <span class="cm">// only if returnType ≠ void</span>
+}</div>
+      </div>
+      <div class="grid2">
+        <div class="card">
+          <div class="card-title">Access Modifiers</div>
+          <span class="badge badge-blue">public</span> Accessible everywhere<br>
+          <span class="badge badge-green">private</span> Only within the class<br>
+          <span class="badge badge-purple">protected</span> Class &amp; subclasses<br>
+          <span class="badge badge-gray">(default)</span> Same package only
+        </div>
+        <div class="card">
+          <div class="card-title">Parts of Method Header</div>
+          <strong>returnType</strong> — type of value returned<br>
+          <strong>methodName</strong> — camelCase name<br>
+          <strong>parameterList</strong> — inputs (can be empty)<br>
+          <strong>body</strong> — statements inside { }
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Complete Example</div>
+        <div class="code-block"><span class="kw">public class</span> <span class="cls">Calculator</span> {
+
+    <span class="cm">// Method that returns a value</span>
+    <span class="kw">public int</span> <span class="fn">add</span>(<span class="kw">int</span> a, <span class="kw">int</span> b) {
+        <span class="kw">int</span> sum = a + b;
+        <span class="kw">return</span> sum;
+    }
+
+    <span class="cm">// Method with no return value</span>
+    <span class="kw">public void</span> <span class="fn">greet</span>() {
+        System.out.println(<span class="str">"Hello, ICSE Student!"</span>);
+    }
+}</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Calling a Method (in BlueJ)</div>
+        <div class="code-block"><span class="cls">Calculator</span> obj = <span class="kw">new</span> <span class="cls">Calculator</span>(); <span class="cm">// Step 1: create object</span>
+<span class="kw">int</span> result = obj.<span class="fn">add</span>(<span class="num">5</span>, <span class="num">3</span>);         <span class="cm">// Step 2: call method</span>
+obj.<span class="fn">greet</span>();                          <span class="cm">// void method call</span>
+System.out.println(result);           <span class="cm">// prints 8</span></div>
+        <div class="tip">In BlueJ, right-click any object on the workbench to call its methods interactively without writing extra code!</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S3 -->
+  <div class="section" id="s3" data-idx="2">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-title">
+        <div class="section-icon" style="background:#EEEDFE;color:#534AB7;">③</div>
+        Types of Methods
+      </div>
+      <span class="chevron">⌄</span>
+    </div>
+    <div class="section-body">
+      <div class="grid2">
+        <div class="card">
+          <div class="card-title"><span class="badge badge-green">Type 1</span> Void Methods</div>
+          Do NOT return any value. Use <code>void</code> as return type.
+          <div class="code-block"><span class="kw">public void</span> <span class="fn">display</span>() {
+  System.out.println(<span class="str">"Hello"</span>);
+}</div>
+        </div>
+        <div class="card">
+          <div class="card-title"><span class="badge badge-blue">Type 2</span> Non-Void Methods</div>
+          Return a value using <code>return</code>. Return type must match.
+          <div class="code-block"><span class="kw">public int</span> <span class="fn">square</span>(<span class="kw">int</span> n) {
+  <span class="kw">return</span> n * n;
+}</div>
+        </div>
+        <div class="card">
+          <div class="card-title"><span class="badge badge-purple">Type 3</span> Parameterized</div>
+          Accept input values to work with.
+          <div class="code-block"><span class="kw">public void</span> <span class="fn">printName</span>(<span class="fn">String</span> name) {
+  System.out.println(name);
+}</div>
+        </div>
+        <div class="card">
+          <div class="card-title"><span class="badge badge-amber">Type 4</span> Non-Parameterized</div>
+          Take no input. Use class-level data.
+          <div class="code-block"><span class="kw">public void</span> <span class="fn">showPI</span>() {
+  System.out.println(<span class="num">3.14159</span>);
+}</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Static vs Instance Methods</div>
+        <div class="table-wrap"><table>
+          <tr><th>Feature</th><th>Static Method</th><th>Instance Method</th></tr>
+          <tr><td>Keyword</td><td><code>static</code></td><td>(none)</td></tr>
+          <tr><td>Called using</td><td>ClassName.method()</td><td>object.method()</td></tr>
+          <tr><td>Object needed?</td><td>No</td><td>Yes</td></tr>
+          <tr><td>Access instance variables?</td><td>No</td><td>Yes</td></tr>
+          <tr><td>Example</td><td>Math.sqrt(4)</td><td>obj.display()</td></tr>
+        </table></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S4 -->
+  <div class="section" id="s4" data-idx="3">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-title">
+        <div class="section-icon" style="background:#FAEEDA;color:#854F0B;">④</div>
+        Parameters &amp; Arguments
+      </div>
+      <span class="chevron">⌄</span>
+    </div>
+    <div class="section-body">
+      <div class="grid2">
+        <div class="card">
+          <div class="card-title">Formal Parameters</div>
+          Variables declared in the method definition — act as placeholders.
+          <div class="code-block"><span class="cm">// a and b are formal parameters</span>
+<span class="kw">int</span> <span class="fn">add</span>(<span class="kw">int</span> a, <span class="kw">int</span> b) { ... }</div>
+        </div>
+        <div class="card">
+          <div class="card-title">Actual Arguments</div>
+          Real values passed when calling the method.
+          <div class="code-block"><span class="cm">// 10 and 20 are actual arguments</span>
+obj.<span class="fn">add</span>(<span class="num">10</span>, <span class="num">20</span>);</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Call by Value vs Call by Reference</div>
+        <div class="table-wrap"><table>
+          <tr><th>Call by Value</th><th>Call by Reference</th></tr>
+          <tr><td>Copy of value is passed</td><td>Reference (address) is passed</td></tr>
+          <tr><td>Original variable <strong>unchanged</strong></td><td>Original may <strong>change</strong></td></tr>
+          <tr><td>Used for primitive types (int, char, double…)</td><td>Used for objects and arrays</td></tr>
+        </table></div>
+        <div class="code-block"><span class="cm">// Call by Value: original is unchanged</span>
+<span class="kw">void</span> <span class="fn">change</span>(<span class="kw">int</span> x) {
+    x = <span class="num">100</span>;   <span class="cm">// only local copy changes</span>
+}
+<span class="kw">int</span> a = <span class="num">5</span>;
+<span class="fn">change</span>(a);
+System.out.println(a);  <span class="cm">// still prints 5</span></div>
+      </div>
+      <div class="tip">In Java, primitive types are always passed by value. Objects are passed by reference — changes inside the method affect the original object.</div>
+    </div>
+  </div>
+
+  <!-- S5 -->
+  <div class="section" id="s5" data-idx="4">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-title">
+        <div class="section-icon" style="background:#FAECE7;color:#993C1D;">⑤</div>
+        Return Types
+      </div>
+      <span class="chevron">⌄</span>
+    </div>
+    <div class="section-body">
+      <div class="card">
+        <div class="card-title">The return Statement</div>
+        Used to send a value back to the caller. Execution of the method stops at <code>return</code>.
+        <div class="code-block"><span class="kw">public</span> <span class="fn">String</span> <span class="fn">grade</span>(<span class="kw">int</span> marks) {
+    <span class="kw">if</span> (marks >= <span class="num">90</span>)
+        <span class="kw">return</span> <span class="str">"A+"</span>;
+    <span class="kw">else if</span> (marks >= <span class="num">75</span>)
+        <span class="kw">return</span> <span class="str">"A"</span>;
+    <span class="kw">else</span>
+        <span class="kw">return</span> <span class="str">"B"</span>;
+}
+<span class="cm">// Calling: String g = obj.grade(88); → g = "A"</span></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Common Return Types</div>
+        <div class="table-wrap"><table>
+          <tr><th>Return Type</th><th>Use</th><th>Example</th></tr>
+          <tr><td><code>void</code></td><td>Returns nothing</td><td>display()</td></tr>
+          <tr><td><code>int</code></td><td>Returns integer</td><td>add(a, b)</td></tr>
+          <tr><td><code>double</code></td><td>Returns decimal number</td><td>area(r)</td></tr>
+          <tr><td><code>boolean</code></td><td>Returns true or false</td><td>isEven(n)</td></tr>
+          <tr><td><code>String</code></td><td>Returns text</td><td>getName()</td></tr>
+          <tr><td><code>char</code></td><td>Returns a character</td><td>firstChar(s)</td></tr>
+        </table></div>
+      </div>
+      <div class="warn">The return type in the method header and the value being returned MUST match. A mismatch causes a compile-time error in Java.</div>
+    </div>
+  </div>
+
+  <!-- S6 -->
+  <div class="section" id="s6" data-idx="5">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-title">
+        <div class="section-icon" style="background:#E1F5EE;color:#0F6E56;">⑥</div>
+        Method Overloading
+      </div>
+      <span class="chevron">⌄</span>
+    </div>
+    <div class="section-body">
+      <div class="card">
+        <div class="card-title">What is Method Overloading?</div>
+        Defining <strong>multiple methods with the same name</strong> but <strong>different parameter lists</strong>. Java selects the correct method at compile time based on arguments passed. This is called <em>compile-time polymorphism</em>.
+      </div>
+      <div class="grid2">
+        <div class="card">
+          <div class="card-title"><span class="badge badge-green">✓ Valid Overloading</span></div>
+          Different number of parameters<br>
+          Different types of parameters<br>
+          Different order of parameter types
+        </div>
+        <div class="card">
+          <div class="card-title"><span class="badge badge-coral">✗ NOT Overloading</span></div>
+          Only return type is different<br>
+          Only parameter names differ<br>
+          Only access modifier differs
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Overloading Example</div>
+        <div class="code-block"><span class="kw">public class</span> <span class="cls">MathOps</span> {
+
+    <span class="cm">// Version 1: two integers</span>
+    <span class="kw">public int</span> <span class="fn">multiply</span>(<span class="kw">int</span> a, <span class="kw">int</span> b) {
+        <span class="kw">return</span> a * b;
+    }
+
+    <span class="cm">// Version 2: three integers</span>
+    <span class="kw">public int</span> <span class="fn">multiply</span>(<span class="kw">int</span> a, <span class="kw">int</span> b, <span class="kw">int</span> c) {
+        <span class="kw">return</span> a * b * c;
+    }
+
+    <span class="cm">// Version 3: two doubles</span>
+    <span class="kw">public double</span> <span class="fn">multiply</span>(<span class="kw">double</span> a, <span class="kw">double</span> b) {
+        <span class="kw">return</span> a * b;
+    }
+}
+<span class="cm">// Java picks the right version automatically!</span>
+<span class="cm">// obj.multiply(2,3)      → uses Version 1</span>
+<span class="cm">// obj.multiply(2,3,4)    → uses Version 2</span>
+<span class="cm">// obj.multiply(2.5, 3.0) → uses Version 3</span></div>
+      </div>
+      <div class="tip">Java automatically picks the correct method based on the number and type of arguments — this is called <strong>method dispatch</strong>.</div>
+    </div>
+  </div>
+
+  <!-- S7 -->
+  <div class="section" id="s7" data-idx="6">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-title">
+        <div class="section-icon" style="background:#E6F1FB;color:#185FA5;">⑦</div>
+        Scope of Variables
+      </div>
+      <span class="chevron">⌄</span>
+    </div>
+    <div class="section-body">
+      <div class="grid2">
+        <div class="card">
+          <div class="card-title">Local Variables</div>
+          Declared inside a method. Exist only while the method runs. Must be initialized before use. Not accessible outside the method.
+          <div class="code-block"><span class="kw">void</span> <span class="fn">show</span>() {
+  <span class="kw">int</span> x = <span class="num">10</span>; <span class="cm">// local</span>
+  System.out.println(x);
+}
+<span class="cm">// x not accessible here</span></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Instance Variables</div>
+          Declared inside class, outside all methods. Accessible to all methods. Default values assigned (0 for int, null for String, etc.).
+          <div class="code-block"><span class="kw">class</span> <span class="cls">Student</span> {
+  <span class="kw">int</span> age;   <span class="cm">// instance var</span>
+  <span class="kw">void</span> <span class="fn">show</span>() {
+    System.out.println(age);
+  }
+}</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Variable Shadowing &amp; the <code>this</code> keyword</div>
+        When a local variable has the same name as an instance variable, the local variable takes priority (called <em>shadowing</em>). Use <code>this.variableName</code> to access the instance variable.
+        <div class="code-block"><span class="kw">class</span> <span class="cls">Box</span> {
+    <span class="kw">int</span> length;        <span class="cm">// instance variable</span>
+
+    <span class="kw">void</span> <span class="fn">setLength</span>(<span class="kw">int</span> length) {
+        <span class="cm">// 'length' here refers to parameter (local)</span>
+        <span class="kw">this</span>.length = length; <span class="cm">// 'this.length' = instance variable</span>
+    }
+}</div>
+      </div>
+      <div class="warn">If a local variable name shadows an instance variable and you forget <code>this.</code>, the instance variable does not get updated — a very common bug!</div>
+    </div>
+  </div>
+
+  <!-- S8 -->
+  <div class="section" id="s8" data-idx="7">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-title">
+        <div class="section-icon" style="background:#EEEDFE;color:#534AB7;">⑧</div>
+        Recursion
+      </div>
+      <span class="chevron">⌄</span>
+    </div>
+    <div class="section-body">
+      <div class="card">
+        <div class="card-title">What is Recursion?</div>
+        A method that <strong>calls itself</strong> to solve a smaller version of the same problem. Every recursive method must have a <em>base case</em> — a condition that stops the recursion.
+      </div>
+      <div class="grid2">
+        <div class="card">
+          <div class="card-title">Factorial — n!</div>
+          <div class="code-block"><span class="kw">public int</span> <span class="fn">fact</span>(<span class="kw">int</span> n) {
+  <span class="kw">if</span> (n <= <span class="num">1</span>)
+    <span class="kw">return</span> <span class="num">1</span>;       <span class="cm">// base</span>
+  <span class="kw">return</span> n * <span class="fn">fact</span>(n-<span class="num">1</span>);
+}
+<span class="cm">// fact(4) = 4×3×2×1 = 24</span></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Fibonacci Series</div>
+          <div class="code-block"><span class="kw">public int</span> <span class="fn">fib</span>(<span class="kw">int</span> n) {
+  <span class="kw">if</span> (n <= <span class="num">1</span>)
+    <span class="kw">return</span> n;        <span class="cm">// base</span>
+  <span class="kw">return</span> <span class="fn">fib</span>(n-<span class="num">1</span>) + <span class="fn">fib</span>(n-<span class="num">2</span>);
+}
+<span class="cm">// fib(5) → 0,1,1,2,3,5</span></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">How Recursion works — Factorial(4)</div>
+        <div class="code-block"><span class="fn">fact</span>(<span class="num">4</span>)
+  → <span class="num">4</span> × <span class="fn">fact</span>(<span class="num">3</span>)
+         → <span class="num">3</span> × <span class="fn">fact</span>(<span class="num">2</span>)
+                → <span class="num">2</span> × <span class="fn">fact</span>(<span class="num">1</span>)
+                       → <span class="num">1</span>   <span class="cm">(base case reached!)</span>
+<span class="cm">↑ Now unwinds: 2×1=2 → 3×2=6 → 4×6 = 24</span></div>
+      </div>
+      <div class="warn">Always define a base case! Without it, the method calls itself forever and causes a <strong>StackOverflowError</strong> at runtime.</div>
+      <div class="card">
+        <div class="card-title">Recursion vs Iteration</div>
+        <div class="table-wrap"><table>
+          <tr><th>Recursion</th><th>Iteration (Loop)</th></tr>
+          <tr><td>Method calls itself</td><td>Uses for/while loop</td></tr>
+          <tr><td>Uses call stack memory</td><td>Uses less memory</td></tr>
+          <tr><td>Elegant for tree/math problems</td><td>Faster in practice</td></tr>
+          <tr><td>Needs base case</td><td>Needs loop termination</td></tr>
+        </table></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="quiz-section" id="quiz">
+    <div class="quiz-header">
+      <h2>🧠 Practice Quiz — Methods &amp; Functions</h2>
+      <p>Test your understanding! Click an option to answer each question.</p>
+    </div>
+    <div class="quiz-body">
+
+      <!-- Q1 -->
+      <div class="q-block" data-answer="b">
+        <div class="q-text"><span class="q-num">1</span>What is the return type of a method that does not return any value?</div>
+        <div class="options">
+          <div class="option" onclick="answer(this,'a')"><span class="option-label">A</span> int</div>
+          <div class="option" onclick="answer(this,'b')"><span class="option-label">B</span> void</div>
+          <div class="option" onclick="answer(this,'c')"><span class="option-label">C</span> null</div>
+          <div class="option" onclick="answer(this,'d')"><span class="option-label">D</span> empty</div>
+        </div>
+        <div class="feedback ok">✓ Correct! <code>void</code> is used when a method does not return any value.</div>
+        <div class="feedback bad">✗ Incorrect. The correct answer is <strong>void</strong>. A void method performs actions but returns nothing.</div>
+      </div>
+
+      <!-- Q2 -->
+      <div class="q-block" data-answer="c">
+        <div class="q-text"><span class="q-num">2</span>Which of the following is a valid method overload of <code>int add(int a, int b)</code>?</div>
+        <div class="options">
+          <div class="option" onclick="answer(this,'a')"><span class="option-label">A</span> double add(int a, int b)</div>
+          <div class="option" onclick="answer(this,'b')"><span class="option-label">B</span> int add(int x, int y)</div>
+          <div class="option" onclick="answer(this,'c')"><span class="option-label">C</span> int add(int a, int b, int c)</div>
+          <div class="option" onclick="answer(this,'d')"><span class="option-label">D</span> private int add(int a, int b)</div>
+        </div>
+        <div class="feedback ok">✓ Correct! Adding a third parameter changes the parameter list — making it a valid overload.</div>
+        <div class="feedback bad">✗ Incorrect. Overloading requires different parameter lists. Only changing return type or access modifier is NOT valid overloading.</div>
+      </div>
+
+      <!-- Q3 -->
+      <div class="q-block" data-answer="a">
+        <div class="q-text"><span class="q-num">3</span>What is a local variable?</div>
+        <div class="options">
+          <div class="option" onclick="answer(this,'a')"><span class="option-label">A</span> A variable declared inside a method</div>
+          <div class="option" onclick="answer(this,'b')"><span class="option-label">B</span> A variable declared inside a class but outside all methods</div>
+          <div class="option" onclick="answer(this,'c')"><span class="option-label">C</span> A variable declared using the static keyword</div>
+          <div class="option" onclick="answer(this,'d')"><span class="option-label">D</span> A variable accessible throughout the program</div>
+        </div>
+        <div class="feedback ok">✓ Correct! A local variable is declared inside a method and only exists during that method's execution.</div>
+        <div class="feedback bad">✗ Incorrect. A local variable is declared inside a method, not at class level. Instance variables are declared inside the class but outside methods.</div>
+      </div>
+
+      <!-- Q4 -->
+      <div class="q-block" data-answer="d">
+        <div class="q-text"><span class="q-num">4</span>What happens if a recursive method has no base case?</div>
+        <div class="options">
+          <div class="option" onclick="answer(this,'a')"><span class="option-label">A</span> It returns 0</div>
+          <div class="option" onclick="answer(this,'b')"><span class="option-label">B</span> It returns null</div>
+          <div class="option" onclick="answer(this,'c')"><span class="option-label">C</span> It gives a compile-time error</div>
+          <div class="option" onclick="answer(this,'d')"><span class="option-label">D</span> It causes a StackOverflowError at runtime</div>
+        </div>
+        <div class="feedback ok">✓ Correct! Without a base case, the method keeps calling itself indefinitely, exhausting the call stack and causing a StackOverflowError.</div>
+        <div class="feedback bad">✗ Incorrect. The code compiles fine but crashes at runtime with a <strong>StackOverflowError</strong> because the method calls itself forever.</div>
+      </div>
+
+      <!-- Q5 -->
+      <div class="q-block" data-answer="b">
+        <div class="q-text"><span class="q-num">5</span>What keyword is used to access an instance variable when it is shadowed by a local variable?</div>
+        <div class="options">
+          <div class="option" onclick="answer(this,'a')"><span class="option-label">A</span> super</div>
+          <div class="option" onclick="answer(this,'b')"><span class="option-label">B</span> this</div>
+          <div class="option" onclick="answer(this,'c')"><span class="option-label">C</span> self</div>
+          <div class="option" onclick="answer(this,'d')"><span class="option-label">D</span> instance</div>
+        </div>
+        <div class="feedback ok">✓ Correct! <code>this.variableName</code> refers to the instance variable of the current object, distinguishing it from a local variable with the same name.</div>
+        <div class="feedback bad">✗ Incorrect. The keyword <strong>this</strong> refers to the current object and is used to access its instance variables when they are shadowed.</div>
+      </div>
+
+      <!-- Q6 -->
+      <div class="q-block" data-answer="c">
+        <div class="q-text"><span class="q-num">6</span>In call by value, what is passed to the method?</div>
+        <div class="options">
+          <div class="option" onclick="answer(this,'a')"><span class="option-label">A</span> The original variable itself</div>
+          <div class="option" onclick="answer(this,'b')"><span class="option-label">B</span> The memory address of the variable</div>
+          <div class="option" onclick="answer(this,'c')"><span class="option-label">C</span> A copy of the value</div>
+          <div class="option" onclick="answer(this,'d')"><span class="option-label">D</span> A reference to the object</div>
+        </div>
+        <div class="feedback ok">✓ Correct! In call by value, only a copy of the value is passed. The original variable remains unchanged after the method call.</div>
+        <div class="feedback bad">✗ Incorrect. In call by value, a <strong>copy of the value</strong> is passed. Changes inside the method do not affect the original variable.</div>
+      </div>
+
+      <div class="quiz-score" id="quizScore">
+        <h3 id="scoreText">Score: 0 / 6</h3>
+        <p id="scoreMsg">Keep practicing!</p>
+        <div class="quiz-actions">
+          <button class="btn btn-purple" onclick="resetQuiz()">Retry Quiz</button>
+          <button class="btn btn-secondary" onclick="window.scrollTo({top:0,behavior:'smooth'})">Back to Top</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Quick Reference -->
+  <div class="section" style="margin-top:16px;">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-title">
+        <div class="section-icon" style="background:#F1EFE8;color:#5F5E5A;">📋</div>
+        Quick Reference — Key Terms
+      </div>
+      <span class="chevron">⌄</span>
+    </div>
+    <div class="section-body">
+      <div class="table-wrap"><table>
+        <tr><th>Term</th><th>Meaning</th></tr>
+        <tr><td><code>void</code></td><td>Method returns no value</td></tr>
+        <tr><td><code>return</code></td><td>Exits method; optionally sends a value back to caller</td></tr>
+        <tr><td>Parameter</td><td>Variable in method definition (formal parameter)</td></tr>
+        <tr><td>Argument</td><td>Actual value passed during method call</td></tr>
+        <tr><td>Overloading</td><td>Same name, different parameters in the same class</td></tr>
+        <tr><td>Scope</td><td>Region of code where a variable is accessible</td></tr>
+        <tr><td>Local variable</td><td>Declared inside a method; only lives during that call</td></tr>
+        <tr><td>Instance variable</td><td>Declared in class body, outside methods; shared by all methods</td></tr>
+        <tr><td>Recursion</td><td>A method calling itself</td></tr>
+        <tr><td>Base case</td><td>The stopping condition in a recursive method</td></tr>
+        <tr><td><code>this</code></td><td>Refers to current object's instance variable</td></tr>
+        <tr><td><code>static</code></td><td>Belongs to the class, not to any specific object</td></tr>
+        <tr><td>Call by value</td><td>Copy of value passed; original unchanged</td></tr>
+        <tr><td>Call by reference</td><td>Object's address passed; original may change</td></tr>
+        <tr><td>StackOverflowError</td><td>Runtime error caused by infinite recursion</td></tr>
+      </table></div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  Class 10 ICSE — Java Methods &amp; Functions &nbsp;|&nbsp; BlueJ Environment &nbsp;|&nbsp; Complete Study Notes
+</div>
+
+<script>
+  const totalSections = 8;
+  const read = new Set();
+
+  function toggleSection(header) {
+    const sec = header.parentElement;
+    const isOpen = sec.classList.toggle('open');
+    if (isOpen && sec.dataset.idx !== undefined) {
+      read.add(sec.dataset.idx);
+      updateProgress();
+    }
+  }
+
+  function updateProgress() {
+    const pct = Math.round((read.size / totalSections) * 100);
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressLabel').textContent = read.size + ' of ' + totalSections + ' sections read';
+  }
+
+  function expandAll() {
+    document.querySelectorAll('.section[data-idx]').forEach(s => {
+      s.classList.add('open');
+      read.add(s.dataset.idx);
+    });
+    updateProgress();
+  }
+
+  function collapseAll() {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('open'));
+  }
+
+  // Quiz
+  let score = 0;
+  let answered = 0;
+  const total = 6;
+
+  function answer(el, chosen) {
+    const block = el.closest('.q-block');
+    if (block.dataset.done) return;
+    block.dataset.done = '1';
+    answered++;
+
+    const correct = block.dataset.answer;
+    const opts = block.querySelectorAll('.option');
+    const feedbacks = block.querySelectorAll('.feedback');
+
+    opts.forEach(o => o.style.pointerEvents = 'none');
+
+    if (chosen === correct) {
+      el.classList.add('correct');
+      feedbacks[0].classList.add('show');
+      score++;
+    } else {
+      el.classList.add('wrong');
+      feedbacks[1].classList.add('show');
+      // Highlight correct
+      opts.forEach(o => {
+        if (o.textContent.trim().startsWith(correct.toUpperCase())) o.classList.add('correct');
+      });
+    }
+
+    if (answered === total) {
+      const scoreEl = document.getElementById('quizScore');
+      scoreEl.style.display = 'block';
+      document.getElementById('scoreText').textContent = 'Score: ' + score + ' / ' + total;
+      let msg = score === total ? '🎉 Perfect! Excellent work!' :
+                score >= 4 ? '👍 Good job! Review the missed ones.' :
+                '📚 Keep studying and try again!';
+      document.getElementById('scoreMsg').textContent = msg;
+      scoreEl.scrollIntoView({ behavior: 'smooth' });
+    }
+  }
+
+  function resetQuiz() {
+    score = 0; answered = 0;
+    document.querySelectorAll('.q-block').forEach(b => {
+      delete b.dataset.done;
+      b.querySelectorAll('.option').forEach(o => {
+        o.classList.remove('correct','wrong');
+        o.style.pointerEvents = '';
+      });
+      b.querySelectorAll('.feedback').forEach(f => f.classList.remove('show'));
+    });
+    document.getElementById('quizScore').style.display = 'none';
+    document.getElementById('quiz').scrollIntoView({ behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>
